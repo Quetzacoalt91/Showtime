@@ -27,7 +27,7 @@ public class Movie implements Serializable {
     private String bgImageUrl;
     private String cardImageUrl;
     private String videoUrl;
-    private String studio;
+    private String channel;
 
     public Movie() {
     }
@@ -56,12 +56,12 @@ public class Movie implements Serializable {
         this.description = description;
     }
 
-    public String getStudio() {
-        return studio;
+    public String getChannel() {
+        return channel;
     }
 
-    public void setStudio(String studio) {
-        this.studio = studio;
+    public void setChannel(String channel) {
+        this.channel = channel;
     }
 
     public String getVideoUrl() {

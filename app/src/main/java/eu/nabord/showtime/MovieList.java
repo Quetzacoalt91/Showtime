@@ -32,6 +32,7 @@ public final class MovieList {
     public static List<Movie> setupMovies() {
         list = new ArrayList<>();
         String title[] = {
+                "The Big Bang Theory",
                 "Zeitgeist 2010_ Year in Review",
                 "Google Demo Slam_ 20ft Search",
                 "Introducing Gmail Blue",
@@ -45,10 +46,11 @@ public final class MovieList {
                 + "amet mi accumsan mollis sed et magna. Vivamus sed aliquam risus. Nulla eget dolor in elit "
                 + "facilisis mattis. Ut aliquet luctus lacus. Phasellus nec commodo erat. Praesent tempus id "
                 + "lectus ac scelerisque. Maecenas pretium cursus lectus id volutpat.";
-        String studio[] = {
-                "Studio Zero", "Studio One", "Studio Two", "Studio Three", "Studio Four"
+        String channel[] = {
+                "E4", "Studio Zero", "Studio One", "Studio Two", "Studio Three", "Studio Four"
         };
         String videoUrl[] = {
+                "http://192.168.0.29:3001/stream/8448",
                 "http://commondatastorage.googleapis.com/android-tv/Sample%20videos/Zeitgeist/Zeitgeist%202010_%20Year%20in%20Review.mp4",
                 "http://commondatastorage.googleapis.com/android-tv/Sample%20videos/Demo%20Slam/Google%20Demo%20Slam_%2020ft%20Search.mp4",
                 "http://commondatastorage.googleapis.com/android-tv/Sample%20videos/April%20Fool's%202013/Introducing%20Gmail%20Blue.mp4",
@@ -56,6 +58,7 @@ public final class MovieList {
                 "http://commondatastorage.googleapis.com/android-tv/Sample%20videos/April%20Fool's%202013/Introducing%20Google%20Nose.mp4"
         };
         String bgImageUrl[] = {
+                "https://presentationarchive.com/e42013/out-b.jpg",
                 "http://commondatastorage.googleapis.com/android-tv/Sample%20videos/Zeitgeist/Zeitgeist%202010_%20Year%20in%20Review/bg.jpg",
                 "http://commondatastorage.googleapis.com/android-tv/Sample%20videos/Demo%20Slam/Google%20Demo%20Slam_%2020ft%20Search/bg.jpg",
                 "http://commondatastorage.googleapis.com/android-tv/Sample%20videos/April%20Fool's%202013/Introducing%20Gmail%20Blue/bg.jpg",
@@ -63,6 +66,7 @@ public final class MovieList {
                 "http://commondatastorage.googleapis.com/android-tv/Sample%20videos/April%20Fool's%202013/Introducing%20Google%20Nose/bg.jpg",
         };
         String cardImageUrl[] = {
+                "https://d24j9r7lck9cin.cloudfront.net/l/o/1/1122.1539639917.png",
                 "http://commondatastorage.googleapis.com/android-tv/Sample%20videos/Zeitgeist/Zeitgeist%202010_%20Year%20in%20Review/card.jpg",
                 "http://commondatastorage.googleapis.com/android-tv/Sample%20videos/Demo%20Slam/Google%20Demo%20Slam_%2020ft%20Search/card.jpg",
                 "http://commondatastorage.googleapis.com/android-tv/Sample%20videos/April%20Fool's%202013/Introducing%20Gmail%20Blue/card.jpg",
@@ -75,7 +79,7 @@ public final class MovieList {
                     buildMovieInfo(
                             title[index],
                             description,
-                            studio[index],
+                            channel[index],
                             videoUrl[index],
                             cardImageUrl[index],
                             bgImageUrl[index]));
@@ -87,7 +91,7 @@ public final class MovieList {
     private static Movie buildMovieInfo(
             String title,
             String description,
-            String studio,
+            String channel,
             String videoUrl,
             String cardImageUrl,
             String backgroundImageUrl) {
@@ -95,7 +99,7 @@ public final class MovieList {
         movie.setId(count++);
         movie.setTitle(title);
         movie.setDescription(description);
-        movie.setStudio(studio);
+        movie.setChannel(channel);
         movie.setCardImageUrl(cardImageUrl);
         movie.setBackgroundImageUrl(backgroundImageUrl);
         movie.setVideoUrl(videoUrl);
