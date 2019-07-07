@@ -91,15 +91,15 @@ public class MainFragment extends BrowseFragment {
     }
 
     private void loadRows() {
-        List<Movie> list = MovieList.setupMovies();
+        List<Movie> list = MovieList.getList();
 
         ArrayObjectAdapter rowsAdapter = new ArrayObjectAdapter(new ListRowPresenter());
         CardPresenter cardPresenter = new CardPresenter();
 
         // Live TV Category row
         ArrayObjectAdapter listRowAdapter = new ArrayObjectAdapter(cardPresenter);
-        for (int j = 0; j < NUM_COLS; j++) {
-            listRowAdapter.add(list.get(j % 5));
+        for (Movie channel : list) {
+            listRowAdapter.add(channel);
         }
         HeaderItem header = new HeaderItem(rowsAdapter.size(), getString(R.string.category_live_tv));
         rowsAdapter.add(new ListRow(header, listRowAdapter));

@@ -14,10 +14,24 @@
 
 package eu.nabord.showtime;
 
+import android.util.Log;
+
+import com.muparse.M3UItem;
+import com.muparse.M3UParser;
+import com.muparse.M3UPlaylist;
+
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
 public final class MovieList {
+
+    public static final String PLAYLIST_URL = "http://192.168.0.29:3001/playlist";
+    public static final String TAG = "MovieList";
 
     private static List<Movie> list;
     private static long count = 0;
@@ -30,59 +44,41 @@ public final class MovieList {
     }
 
     public static List<Movie> setupMovies() {
-        list = new ArrayList<>();
-        String title[] = {
-                "The Big Bang Theory",
-                "Zeitgeist 2010_ Year in Review",
-                "Google Demo Slam_ 20ft Search",
-                "Introducing Gmail Blue",
-                "Introducing Google Fiber to the Pole",
-                "Introducing Google Nose"
-        };
 
-        String description = "Fusce id nisi turpis. Praesent viverra bibendum semper. "
+        String dummyDescription = "Fusce id nisi turpis. Praesent viverra bibendum semper. "
                 + "Donec tristique, orci sed semper lacinia, quam erat rhoncus massa, non congue tellus est "
                 + "quis tellus. Sed mollis orci venenatis quam scelerisque accumsan. Curabitur a massa sit "
                 + "amet mi accumsan mollis sed et magna. Vivamus sed aliquam risus. Nulla eget dolor in elit "
                 + "facilisis mattis. Ut aliquet luctus lacus. Phasellus nec commodo erat. Praesent tempus id "
                 + "lectus ac scelerisque. Maecenas pretium cursus lectus id volutpat.";
-        String channel[] = {
-                "E4", "Studio Zero", "Studio One", "Studio Two", "Studio Three", "Studio Four"
-        };
-        String videoUrl[] = {
-                "http://192.168.0.29:3001/stream/8448",
-                "http://commondatastorage.googleapis.com/android-tv/Sample%20videos/Zeitgeist/Zeitgeist%202010_%20Year%20in%20Review.mp4",
-                "http://commondatastorage.googleapis.com/android-tv/Sample%20videos/Demo%20Slam/Google%20Demo%20Slam_%2020ft%20Search.mp4",
-                "http://commondatastorage.googleapis.com/android-tv/Sample%20videos/April%20Fool's%202013/Introducing%20Gmail%20Blue.mp4",
-                "http://commondatastorage.googleapis.com/android-tv/Sample%20videos/April%20Fool's%202013/Introducing%20Google%20Fiber%20to%20the%20Pole.mp4",
-                "http://commondatastorage.googleapis.com/android-tv/Sample%20videos/April%20Fool's%202013/Introducing%20Google%20Nose.mp4"
-        };
-        String bgImageUrl[] = {
-                "https://presentationarchive.com/e42013/out-b.jpg",
-                "http://commondatastorage.googleapis.com/android-tv/Sample%20videos/Zeitgeist/Zeitgeist%202010_%20Year%20in%20Review/bg.jpg",
-                "http://commondatastorage.googleapis.com/android-tv/Sample%20videos/Demo%20Slam/Google%20Demo%20Slam_%2020ft%20Search/bg.jpg",
-                "http://commondatastorage.googleapis.com/android-tv/Sample%20videos/April%20Fool's%202013/Introducing%20Gmail%20Blue/bg.jpg",
-                "http://commondatastorage.googleapis.com/android-tv/Sample%20videos/April%20Fool's%202013/Introducing%20Google%20Fiber%20to%20the%20Pole/bg.jpg",
-                "http://commondatastorage.googleapis.com/android-tv/Sample%20videos/April%20Fool's%202013/Introducing%20Google%20Nose/bg.jpg",
-        };
-        String cardImageUrl[] = {
-                "https://d24j9r7lck9cin.cloudfront.net/l/o/1/1122.1539639917.png",
-                "http://commondatastorage.googleapis.com/android-tv/Sample%20videos/Zeitgeist/Zeitgeist%202010_%20Year%20in%20Review/card.jpg",
-                "http://commondatastorage.googleapis.com/android-tv/Sample%20videos/Demo%20Slam/Google%20Demo%20Slam_%2020ft%20Search/card.jpg",
-                "http://commondatastorage.googleapis.com/android-tv/Sample%20videos/April%20Fool's%202013/Introducing%20Gmail%20Blue/card.jpg",
-                "http://commondatastorage.googleapis.com/android-tv/Sample%20videos/April%20Fool's%202013/Introducing%20Google%20Fiber%20to%20the%20Pole/card.jpg",
-                "http://commondatastorage.googleapis.com/android-tv/Sample%20videos/April%20Fool's%202013/Introducing%20Google%20Nose/card.jpg"
-        };
+        String bgImageUrl = "https://presentationarchive.com/e42013/out-b.jpg";
+        String cardImageUrl = "https://d24j9r7lck9cin.cloudfront.net/l/o/1/1122.1539639917.png";
 
-        for (int index = 0; index < title.length; ++index) {
+        M3UPlaylist channels;
+        try {
+            channels = new M3UParser().parseFile(
+                    new BufferedInputStream(
+                            new URL(PLAYLIST_URL).openStream()
+                    )
+            );
+        } catch (Exception e) {
+            Log.e(TAG, "Cannot get channels", e);
+            return new ArrayList<>();
+        }
+
+        list = new ArrayList<>();
+
+        for (M3UItem channel : channels.getPlaylistItems()) {
             list.add(
                     buildMovieInfo(
-                            title[index],
-                            description,
-                            channel[index],
-                            videoUrl[index],
-                            cardImageUrl[index],
-                            bgImageUrl[index]));
+                            channel.getItemName(),
+                            dummyDescription,
+                            "",
+                            channel.getItemUrl(),
+                            channel.getItemIcon(),
+                            bgImageUrl
+                    )
+            );
         }
 
         return list;
