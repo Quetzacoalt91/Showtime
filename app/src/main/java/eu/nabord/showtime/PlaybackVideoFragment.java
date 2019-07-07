@@ -14,6 +14,7 @@
 
 package eu.nabord.showtime;
 
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v17.leanback.app.VideoSupportFragment;
@@ -21,11 +22,12 @@ import android.support.v17.leanback.app.VideoSupportFragmentGlueHost;
 import android.support.v17.leanback.media.MediaPlayerAdapter;
 import android.support.v17.leanback.media.PlaybackTransportControlGlue;
 import android.support.v17.leanback.widget.PlaybackControlsRow;
+import android.widget.Toast;
 
 /**
  * Handles video playback with media controls.
  */
-public class PlaybackVideoFragment extends VideoSupportFragment {
+public class PlaybackVideoFragment extends VideoSupportFragment implements MediaPlayer.OnErrorListener {
 
     private PlaybackTransportControlGlue<MediaPlayerAdapter> mTransportControlGlue;
 
@@ -48,6 +50,7 @@ public class PlaybackVideoFragment extends VideoSupportFragment {
         mTransportControlGlue.setSubtitle(movie.getDescription());
         mTransportControlGlue.playWhenPrepared();
         playerAdapter.setDataSource(Uri.parse(movie.getVideoUrl()));
+        playerAdapter.getMediaPlayer().setOnErrorListener(this);
     }
 
     @Override
@@ -56,5 +59,16 @@ public class PlaybackVideoFragment extends VideoSupportFragment {
         if (mTransportControlGlue != null) {
             mTransportControlGlue.pause();
         }
+    }
+
+    @Override
+    public boolean onError(MediaPlayer mp, int what, int extras) {
+        getActivity().finish();
+        Toast.makeText(
+                getActivity(),
+                String.format(getString(R.string.media_player_error), what, extras),
+                Toast.LENGTH_SHORT)
+            .show();
+        return true;
     }
 }
