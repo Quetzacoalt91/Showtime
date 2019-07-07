@@ -18,5 +18,4 @@
     <!-- Error messages -->
     <string name="error_fragment_message">An error occurred</string>
     <string name="dismiss_error">Dismiss</string>
-    <string name="media_player_error">An error occured while playing the video (%d, %d)</string>
 </resources>

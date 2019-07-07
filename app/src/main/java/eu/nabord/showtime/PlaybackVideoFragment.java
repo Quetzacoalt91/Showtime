@@ -14,6 +14,8 @@
 
 package eu.nabord.showtime;
 
+import android.content.ComponentName;
+import android.content.Intent;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
@@ -27,7 +29,9 @@ import android.widget.Toast;
 /**
  * Handles video playback with media controls.
  */
-public class PlaybackVideoFragment extends VideoSupportFragment implements MediaPlayer.OnErrorListener {
+public class PlaybackVideoFragment extends VideoSupportFragment {
+
+    public static final int PLAYBACK_REQUEST_CODE = 2;
 
     private PlaybackTransportControlGlue<MediaPlayerAdapter> mTransportControlGlue;
 
@@ -38,19 +42,13 @@ public class PlaybackVideoFragment extends VideoSupportFragment implements Media
         final Movie movie =
                 (Movie) getActivity().getIntent().getSerializableExtra(DetailsActivity.MOVIE);
 
-        VideoSupportFragmentGlueHost glueHost =
-                new VideoSupportFragmentGlueHost(PlaybackVideoFragment.this);
+        Uri uri = Uri.parse(movie.getVideoUrl());
+        Intent vlcIntent = new Intent(Intent.ACTION_VIEW);
+        vlcIntent.setComponent(new ComponentName("org.videolan.vlc", "org.videolan.vlc.gui.video.VideoPlayerActivity"));
+        vlcIntent.setDataAndTypeAndNormalize(uri, "video/*");
+        vlcIntent.putExtra("title", movie.getTitle());
+        startActivityForResult(vlcIntent, PLAYBACK_REQUEST_CODE);
 
-        MediaPlayerAdapter playerAdapter = new MediaPlayerAdapter(getActivity());
-        playerAdapter.setRepeatAction(PlaybackControlsRow.RepeatAction.INDEX_NONE);
-
-        mTransportControlGlue = new PlaybackTransportControlGlue<>(getActivity(), playerAdapter);
-        mTransportControlGlue.setHost(glueHost);
-        mTransportControlGlue.setTitle(movie.getTitle());
-        mTransportControlGlue.setSubtitle(movie.getDescription());
-        mTransportControlGlue.playWhenPrepared();
-        playerAdapter.setDataSource(Uri.parse(movie.getVideoUrl()));
-        playerAdapter.getMediaPlayer().setOnErrorListener(this);
     }
 
     @Override
@@ -62,13 +60,11 @@ public class PlaybackVideoFragment extends VideoSupportFragment implements Media
     }
 
     @Override
-    public boolean onError(MediaPlayer mp, int what, int extras) {
-        getActivity().finish();
-        Toast.makeText(
-                getActivity(),
-                String.format(getString(R.string.media_player_error), what, extras),
-                Toast.LENGTH_SHORT)
-            .show();
-        return true;
+    public void onActivityResult(int requestCode, int resultCode, Intent resultIntent) {
+        // Check which request it is that we're responding to
+        if (requestCode == PLAYBACK_REQUEST_CODE) {
+            getActivity().onBackPressed();
+        }
     }
+
 }
