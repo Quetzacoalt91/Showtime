@@ -38,7 +38,7 @@ public final class MovieList {
 
     public static List<Movie> getList() {
         if (list == null) {
-            list = setupMovies();
+            return new ArrayList<Movie>();
         }
         return list;
     }

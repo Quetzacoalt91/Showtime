@@ -14,9 +14,11 @@
 
 package eu.nabord.showtime;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v17.leanback.app.BackgroundManager;
@@ -32,6 +34,7 @@ import android.support.v17.leanback.widget.Presenter;
 import android.support.v17.leanback.widget.Row;
 import android.support.v17.leanback.widget.RowPresenter;
 import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -66,16 +69,20 @@ public class MainFragment extends BrowseFragment {
     private Timer mBackgroundTimer;
     private String mBackgroundUri;
     private BackgroundManager mBackgroundManager;
+    private LoadM3U m3uLoader;
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         Log.i(TAG, "onCreate");
         super.onActivityCreated(savedInstanceState);
 
+        m3uLoader = new LoadM3U();
+        m3uLoader.setFragmentSource(this);
         prepareBackgroundManager();
 
         setupUIElements();
 
+        m3uLoader.execute();
         loadRows();
 
         setupEventListeners();
@@ -257,6 +264,24 @@ public class MainFragment extends BrowseFragment {
 
         @Override
         public void onUnbindViewHolder(ViewHolder viewHolder) {
+        }
+    }
+
+    private class LoadM3U extends AsyncTask<String, String, List<Movie>> {
+        private MainFragment fragment;
+
+        public void setFragmentSource(MainFragment fragment) {
+            this.fragment = fragment;
+        }
+
+        @Override
+        protected List<Movie> doInBackground(String... args) {
+            return MovieList.setupMovies();
+        }
+
+        @Override
+        protected void onPostExecute(List<Movie> json) {
+            fragment.loadRows();
         }
     }
 
