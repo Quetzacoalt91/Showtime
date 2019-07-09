@@ -76,7 +76,7 @@ public final class MovieList {
                             "",
                             channel.getItemUrl(),
                             channel.getItemIcon(),
-                            bgImageUrl
+                            ""
                     )
             );
         }
