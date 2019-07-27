@@ -54,6 +54,9 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import eu.nabord.showtime.listrow.CustomListRow;
+import eu.nabord.showtime.listrow.CustomListRowPresenter;
+
 public class MainFragment extends BrowseFragment {
     private static final String TAG = "MainFragment";
 
@@ -100,16 +103,18 @@ public class MainFragment extends BrowseFragment {
     private void loadRows() {
         List<Movie> list = MovieList.getList();
 
-        ArrayObjectAdapter rowsAdapter = new ArrayObjectAdapter(new ListRowPresenter());
-        CardPresenter cardPresenter = new CardPresenter();
+        ArrayObjectAdapter rowsAdapter = new ArrayObjectAdapter(new CustomListRowPresenter());
 
         // Live TV Category row
-        ArrayObjectAdapter listRowAdapter = new ArrayObjectAdapter(cardPresenter);
+        ArrayObjectAdapter listRowAdapter = new ArrayObjectAdapter(new CardPresenter());
         for (Movie channel : list) {
             listRowAdapter.add(channel);
         }
         HeaderItem header = new HeaderItem(rowsAdapter.size(), getString(R.string.category_live_tv));
-        rowsAdapter.add(new ListRow(header, listRowAdapter));
+        CustomListRow channelsList = new CustomListRow(header, listRowAdapter);
+        // Display 5 elements per row
+        channelsList.setNumRows(listRowAdapter.size() / 5);
+        rowsAdapter.add(channelsList);
 
         // Settings row
         HeaderItem gridHeader = new HeaderItem(rowsAdapter.size(), getString(R.string.category_settings));
@@ -119,7 +124,7 @@ public class MainFragment extends BrowseFragment {
         gridRowAdapter.add(getResources().getString(R.string.grid_view));
         gridRowAdapter.add(getString(R.string.error_fragment));
         gridRowAdapter.add(getResources().getString(R.string.personal_settings));
-        rowsAdapter.add(new ListRow(gridHeader, gridRowAdapter));
+        rowsAdapter.add(new CustomListRow(gridHeader, gridRowAdapter));
 
         setAdapter(rowsAdapter);
     }
